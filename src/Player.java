@@ -18,7 +18,14 @@ public class Player
         this.food = 100.0;
         this.gold = 0;
     }
+   
     
+    public void adjustResources(double dStamina, double dWater, double dFood) {
+        this.stamina = Math.max(0, stamina + dStamina);
+        this.water   = Math.max(0, water   + dWater);
+        this.food    = Math.max(0, food    + dFood);
+    }
+
     //setters and getters
     public void setName(String name)
     {
