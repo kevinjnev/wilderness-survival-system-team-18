@@ -31,7 +31,7 @@ public class Main {
                 System.out.println("Invalid Strategy inputted, please re-input: ");
                 aPlayer.setStrategy(userInput.nextLine());
             }
-
+            //TODO: Get vision type from user.
         
             aPlayer.showPlayerInfo();
 
