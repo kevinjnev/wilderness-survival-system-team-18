@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import javax.management.RuntimeErrorException;
+
 public class Player 
 {
 
@@ -13,6 +15,8 @@ public class Player
     private int[] location;
     private Brain brain;
     private Vision vision;
+    private boolean alive; // added to help moveAlongPath work.
+    private Terrain currentTerrain; //added to help rest method work
 
     //Constructor
     public Player()
@@ -24,15 +28,27 @@ public class Player
         this.water = 100.0;
         this.food = 100.0;
         this.gold = 0;
+        this.alive = true; // added this to allow handleGameover to work.
         //TODO: change this to being a random location on the left side of the map.
         this.location = new int[] {0,0};
     }
    
-    
-    public void adjustResources(double dStamina, double dWater, double dFood) {
-        this.stamina = Math.max(0, stamina + dStamina);
-        this.water   = Math.max(0, water   + dWater);
-        this.food    = Math.max(0, food    + dFood);
+   
+    //modified this to subtract values, we are only passing positive values in.
+    // we could 
+    public void adjustResources(double dStamina, double dWater, double dFood) 
+    {
+        this.stamina = Math.max(0, stamina - dStamina);
+        this.water   = Math.max(0, water   - dWater);
+        this.food    = Math.max(0, food    - dFood);
+    }
+
+    //allows player to add resources to their status
+    public void addResources(double dStamina, double dWater, double dFood)
+    {
+        this.stamina = stamina + dStamina;
+        this.water = water + dWater;
+        this.food = food + dFood;
     }
 
     //setters and getters
@@ -81,7 +97,18 @@ public class Player
         */
 
     }
-    
+
+    //added to access Terrain data
+    public void setCurrentTerrain(Terrain type)
+    {
+        this.currentTerrain = type;
+    }
+
+    //added to get terrain data.
+    public Terrain getCurrentTerrain()
+    {
+        return currentTerrain;
+    }
     public String getName()
     {
         return name;
@@ -156,13 +183,107 @@ public class Player
     //For each of the tiles we need to get the costs from the terrain and change the player's resources.
     //Need to also keep track of the player's location.
     //Maybe also check if the resources drop to 0 and end the game if they do, unless we do that somewhere else.
-    public void moveAlongPath(ArrayList<Terrain> path) {
+    public void moveAlongPath(ArrayList<Terrain> path) 
+    {
+        if (path == null || path.isEmpty())
+        {
+            System.out.println("No path to travel. ");
+            handleGameOver();             
+            return;   
+        }
 
+        for (int i = 0; i < path.size(); i++)
+        {
+            Terrain tile;
+            tile = path.get(i);
+
+            //check if player can afford to enter
+            if(!tile.canEnter(this))
+            {
+                System.out.println("Not enough resources to move onto" + tile.getName());
+                handleGameOver();
+                return;
+            }
+
+            //apply the terrain's resource costs
+            boolean success = false;
+            success = tile.applyTerrainCost(this);
+
+            if(!success)
+            {
+                System.out.println("Failed to enter terrain: " + tile.getName());
+                handleGameOver();
+                return;
+            }
+
+            //If location is being tracked by player I need to know.
+            //this.currentTerrain = tile; 
+
+            if(getStamina() <= 0 || getWater() <= 0 || getFood() <= 0)
+            {
+                System.out.println("You have run out or resources on :" + tile.getName());
+                handleGameOver();
+                return;
+            }
+
+            System.out.println("Moved onto " + tile.getName() + "| Stamina: " + getStamina() +
+            ", Water: " + getWater() + ", Food: " + getFood());
+        }
+
+        System.out.println("Finished moving along the path. ");
     }
 
-    public void rest() {
+    //helper method that handles game over messages.
+    private void handleGameOver()
+    {
+        if(this.getStamina() <= 0 || this.getWater() <= 0 || this.getFood() <= 0)
+        {
+            this.alive = false;
+        }
+        
 
+        if(this.alive == false)
+        {
+            System.out.println("Game Over - you have died, lost to the forest");
+        }
+        else // for cases that don't involve resource depletion
+        {
+            System.out.println("Game Over - The Shibboleth got you. (We have zero idea how you managed" + 
+                " to pull off dying via breaking the game.) ");
+        }
+    }
 
+    //handles the calcuations for player stats when resting at a tile.
+    public void rest() 
+    {
+        if (currentTerrain == null)
+        {
+            System.out.println("Cannot rest - current terrain is unknown.");
+            return;
+        }
+
+        //Regain 2 Stamina (movement)
+        addResources(2,0 ,0);
+
+        double halfWatercost = 0.0;
+        double halfFoodCost = 0.0;
+
+        halfWatercost = currentTerrain.getWaterCost() / 2.0;
+        halfFoodCost = currentTerrain.getFoodCost() / 2.0;
+
+        adjustResources(0, halfWatercost, halfFoodCost);
+
+        // if player dies when resting
+          if(getStamina() <= 0 || getWater() <= 0 || getFood() <= 0)
+            {
+                System.out.println("You have died while resting, at least it was peaceful.");
+                handleGameOver();
+                return;
+            }
+
+            System.out.println("You rest for a turn. ");
+        System.out.println("Stamina: " + getStamina() + ", Water: " 
+        + getWater() + ", Food: "  + getFood());
     }
     
 
