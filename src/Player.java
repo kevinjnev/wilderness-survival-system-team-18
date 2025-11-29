@@ -51,6 +51,23 @@ public class Player
         this.food = food + dFood;
     }
 
+    /**
+     * Attempt to spend gold. Returns true if player had enough gold and it was deducted.
+     */
+    public boolean spendGold(int amount) {
+        if (amount < 0) throw new IllegalArgumentException("amount must be >= 0");
+        if (this.gold < amount) return false;
+        this.gold -= amount;
+        return true;
+    }
+
+    /**
+     * Add gold (positive) or remove gold (negative, floored at 0).
+     */
+    public void addGold(int amount) {
+        this.gold = Math.max(0, this.gold + amount);
+    }
+
     //setters and getters
     public void setName(String name)
     {
