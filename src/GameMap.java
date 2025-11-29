@@ -16,12 +16,19 @@ public class GameMap {
 	public BufferedImage moistureImage;
 
 	// colors to mark what items are where
-	public static final String RESET = "\u001B[0m"; // default
-	public static final String RED   = "\u001B[31m"; // food
-	public static final String GREEN = "\u001B[32m"; // trader
-	public static final String YELLOW = "\u001B[33m"; // gold
-	public static final String BLUE  = "\u001B[34m"; // water
+	// public static final String RESET = "\u001B[0m"; // default
+	// public static final String RED   = "\u001B[31m"; // food
+	// public static final String GREEN = "\u001B[32m"; // trader
+	// public static final String YELLOW = "\u001B[33m"; // gold
+	// public static final String BLUE  = "\u001B[34m"; // water
 
+	// emojis to mark what items are where
+	public static final String RESET = "\u001B[0m"; // default
+	public static final String RED   = "🌮"; // food
+	public static final String GREEN = "👤"; // trader
+	public static final String YELLOW = "💰"; // gold
+	public static final String BLUE = "💧"; // water
+	
 	public GameMap(int width, int height){
 		this.width = width;
 		this.height = height;
@@ -29,7 +36,6 @@ public class GameMap {
 		elevation = createNoiseMap(width, height);
 		moisture = createNoiseMap(width, height);
 
-		// might not be needed
 		elevationImage = createMapImage(elevation);
 		moistureImage = createMapImage(moisture);
 	}
@@ -136,6 +142,17 @@ public class GameMap {
 		}
 	}
 
+	// Able to display key whenever
+	public void showKey(){
+		System.out.println("Key");
+		System.out.println("---------------");
+		System.out.println(RED + " = Food         P = Plains");
+		System.out.println(GREEN + " = Trader       M = Mountains");
+		System.out.println(YELLOW + " = Gold         R = River");
+		System.out.println(BLUE + " = Water        S = Swamp");
+		System.out.println("                  D = Desert");
+	}
+	
 	//Takes the elevation and moisture of each square and decides what terrain it is.
 	public void realTerrain(float[][] elevation, float[][] moisture) {
 
@@ -147,41 +164,31 @@ public class GameMap {
 		for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 
-			if (elevation[x][y] < 0.35) {
+			String biome;
 
-			if (moisture[x][y] < 0.35) {
-				System.out.print(randomItem() + "Desert   " + RESET);
+			if(elevation[x][y] < 0.35){
+				if(moisture[x][y] < 0.35){
+					biome = "D"; // desert
+				} else if(moisture[x][y] < 0.45){
+					biome = "P"; // plains
+				} else {	// moisture <= 1
+					biome = "R"; // river
+				}
+			} else if(elevation[x][y] < 0.45){
+				if(moisture[x][y] < 0.45){
+					biome = "P"; // plains
+				} else {	// moisture < 1
+					biome = "S"; // swamp
+				}
+			} else {	// elevation < 1, moisture < 0.45 || moisture < 1
+				biome = "M"; // mountain
 			}
-			else if (moisture[x][y] < 0.45) {
-				System.out.print(randomItem() + "Plains   " + RESET);
-			}
-			else if (moisture[x][y] <= 1) {
-				System.out.print(randomItem() + "River    " + RESET);
-			}
-
-			}
-
-			else if (elevation[x][y] < 0.45) {
-
-			if (moisture[x][y] < 0.45) {
-				System.out.print(randomItem() + "Plains   " + RESET);
-			}
-			else if (moisture[x][y] < 1) {
-				System.out.print(randomItem() + "Swamp    " + RESET);
-			}
-
-			}
-
-			else if (elevation[x][y] < 1) {
-
-			if (moisture[x][y] < 0.45) {
-				System.out.print(randomItem() + "Mountain " + RESET);
-			}
-			else if (moisture[x][y] < 1) {
-				System.out.print(randomItem() + "Mountain " + RESET);
-			}
+			String item = randomItem();
 			
+			if(item.equals("\u001B[0m")){
+				item = " ";
 			}
+			System.out.printf("%-2s %-3s", item, biome);
 		}
 		System.out.println();
 		}
