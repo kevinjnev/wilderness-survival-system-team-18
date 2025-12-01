@@ -99,7 +99,7 @@ public class Player {
         while (notSelected) {
             switch (strategy.toLowerCase()) {
                 case "aggressive":
-                    System.out.println("Enter your Vision (KeenEyed, FarSight): ");
+                    System.out.println("Enter your Vision type (KeenEyed, FarSight): ");
                     visionSelection = userInput.nextLine();
 
                     if (visionSelection.equalsIgnoreCase("KeenEyed")) {
@@ -113,7 +113,7 @@ public class Player {
                     break;
 
                 case "balanced":
-                    System.out.println("Enter your Vision (Focused, Cautious): ");
+                    System.out.println("Enter your Vision type (Focused, Cautious): ");
                     visionSelection = userInput.nextLine();
 
                     if (visionSelection.equalsIgnoreCase("Focused")) {
@@ -197,9 +197,10 @@ public class Player {
      */
 
     // Displays the player ID.
-    void showPlayerInfo() {
+    public void showPlayerInfo() {
         System.out.println("Player Name: " + name);
         System.out.println("Player Strategy: " + strategy);
+        System.out.println("Player Vision: " + vision.type);
         System.out.println("Player Stamina: " + stamina);
         System.out.println("Player Water: " + water);
         System.out.println("Player Food: " + food);

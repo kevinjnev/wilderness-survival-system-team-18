@@ -55,8 +55,6 @@ public class Main {
         double food = aPlayer.getFood();
         int gold = aPlayer.getGold();
 
-        //temporary check to make sure strategy has been changed.
-        System.out.println(aPlayer.getStrategy());
         
         //close Scanner.
         userInput.close();
