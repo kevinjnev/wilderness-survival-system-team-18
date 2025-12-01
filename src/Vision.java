@@ -1,7 +1,10 @@
 import java.util.ArrayList;
 public class Vision {
+    protected final String type;
     
-
+    public Vision(String type) {
+        this.type = type;
+    }
 
     public ArrayList<Terrain> farthestPathToEnd(Player player) {
         return null;
