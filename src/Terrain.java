@@ -26,7 +26,7 @@ public abstract class Terrain {
      */
     public boolean applyTerrainCost(Player player) {
         if (!canEnter(player)) return false;
-        player.adjustResources(-moveCost, -waterCost, -foodCost);
+        player.adjustResources(moveCost, waterCost, foodCost);
         onEntered(player); // hook for special effects
         return true;
     }

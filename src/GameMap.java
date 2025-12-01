@@ -1,7 +1,6 @@
-import java.util.Scanner;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.lang.Math;
+import java.util.Scanner;
 
 public class GameMap {
 	public String difficulty;
@@ -10,6 +9,8 @@ public class GameMap {
 
 	public float[][] elevation;
 	public float[][] moisture;
+
+	public Terrain[][] terrainGrid;
 	
 	// might not be necessary
 	public BufferedImage elevationImage;
@@ -38,6 +39,10 @@ public class GameMap {
 
 		elevationImage = createMapImage(elevation);
 		moistureImage = createMapImage(moisture);
+
+		//each cell will hold a terrain
+		terrainGrid = new Terrain[height][width];
+		generateTerrainGrid();
 	}
 	
 	public static GameMap askForSize(Scanner userInput){
@@ -128,6 +133,51 @@ public class GameMap {
 		}
 		}
 		return noiseMap;
+	}
+
+	//used logic from realTerrain but instead of printing terrain,
+	//I store it in terrainGrid
+	private void generateTerrainGrid() {
+		for (int y = 0; y < height; y++){
+			for (int x = 0; x < width; x++){
+				float e = elevation[y][x];
+				float m = moisture [y][x];
+
+				Terrain t;
+
+				if (e < 0.35f) {//f just converts 0.35 to float
+					if (m<0.35f) {
+						terrainGrid[y][x] = new Desert();
+					}
+					else if (m < 0.45f) {
+						terrainGrid[y][x] = new Plains();
+					}
+					else {
+						terrainGrid[y][x] = new River();
+					}
+				}
+				else if (e < 0.45f) {
+					if (m < 0.45f){
+						terrainGrid[y][x] = new Plains();
+					}
+					else {
+						terrainGrid[y][x] = new Swamp();
+					}
+				}
+				else {
+					terrainGrid[y][x] = new Mountain();
+				}
+			}
+		}
+	}
+
+	//helper function to access terrain
+	public Terrain getTerrainAt(int x, int y) {
+		//check if coordinates are out of bounds
+		if (x < 0 || x >= width || y < 0 || y >= height) {
+			return null;
+		}
+		return terrainGrid[y][x];
 	}
 	
 	//Just prints the noise map of what is passed in.
