@@ -18,8 +18,6 @@ public class Main {
         //otherwise continue on.
         do
         {
-            
-
             System.out.println("Enter your name: ");
             aPlayer.setName(userInput.nextLine());
 
@@ -31,7 +29,8 @@ public class Main {
                 System.out.println("Invalid Strategy inputted, please re-input: ");
                 aPlayer.setStrategy(userInput.nextLine());
             }
-            //TODO: Get vision type from user.
+
+            aPlayer.setVision(userInput, aPlayer.getStrategy());
         
             aPlayer.showPlayerInfo();
 
