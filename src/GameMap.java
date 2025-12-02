@@ -21,18 +21,18 @@ public class GameMap {
 	public BufferedImage moistureImage;
 
 	// colors to mark what items are where
-	// public static final String RESET = "\u001B[0m"; // default
-	// public static final String RED   = "\u001B[31m"; // food
-	// public static final String GREEN = "\u001B[32m"; // trader
-	// public static final String YELLOW = "\u001B[33m"; // gold
-	// public static final String BLUE  = "\u001B[34m"; // water
+	public static final String RESET = "\u001B[0m"; // default
+	public static final String RED   = "\u001B[31m"; // food
+	public static final String GREEN = "\u001B[32m"; // trader
+	public static final String YELLOW = "\u001B[33m"; // gold
+	public static final String BLUE  = "\u001B[34m"; // water
 
 	// emojis to mark what items are where
-	public static final String RESET = "\u001B[0m"; // default
-	public static final String RED   = "🌮"; // food
-	public static final String GREEN = "👤"; // trader
-	public static final String YELLOW = "💰"; // gold
-	public static final String BLUE = "💧"; // water
+	// public static final String RESET = "\u001B[0m"; // default
+	// public static final String RED   = "🌮"; // food
+	// public static final String GREEN = "👤"; // trader
+	// public static final String YELLOW = "💰"; // gold
+	// public static final String BLUE = "💧"; // water
 
 	public GameMap(int width, int height){
 		this.width = width;
@@ -227,10 +227,10 @@ public class GameMap {
 	public void showKey(){
 		System.out.println("\nKey");
 		System.out.println("---------------");
-		System.out.println(RED + " = Food         P = Plains");
-		System.out.println(GREEN + " = Trader       M = Mountains");
-		System.out.println(YELLOW + " = Gold         R = River");
-		System.out.println(BLUE + " = Water        S = Swamp");
+		System.out.println(RED + "Red = Food" + RESET + "        P = Plains");
+		System.out.println(GREEN + "Green = Trader" + RESET + "    M = Mountains");
+		System.out.println(YELLOW + "Yellow = Gold" + RESET + "     R = River");
+		System.out.println(BLUE + "Blue = Water" + RESET + "      S = Swamp");
 		System.out.println("                  D = Desert");
 	}
 	
@@ -280,8 +280,9 @@ public class GameMap {
 			}
 			String item = randomItem();
 			itemGrid[y][x] = item;
-			String printItem = item.equals(RESET) ? " " : item;
-			System.out.printf("%-2s %-3s", printItem, biome);
+			String printItem = item.equals(RESET) ? "" : item;
+			//System.out.printf(RESET + "%-3s %-3s" + RESET, printItem, biome);
+			System.out.printf(RESET + " %-3s " + RESET, printItem + biome);
 		}
 		System.out.println();
 		}
@@ -355,7 +356,7 @@ public class GameMap {
 			for (int x = 0; x < width; x++) {
 				boolean isPlayer = (x == px && y == py);
 				if (!visible[y][x]) {
-					System.out.printf("%-2s %-3s", " ", "?");
+					System.out.printf("%-2s %-3s", "", "?");
 					continue;
 				}
 
@@ -368,10 +369,16 @@ public class GameMap {
 				else biome = "M";
 
 				String item = itemGrid[y][x];
-				String printItem = item.equals(RESET) ? " " : item;
-				if (isPlayer) printItem = "*";
-
-				System.out.printf("%-2s %-3s", printItem, biome);
+				String printItem = item.equals(RESET) ? "" : item;
+				if (isPlayer){
+					printItem = "*";
+					System.out.printf(RESET + "   %-3s" + RESET, printItem);
+				} else if (item.equals(RESET)){
+					System.out.printf(RESET + "   %-3s" + RESET, biome);
+				} else {
+				//System.out.printf(RESET + "%-2s %-3s" + RESET, printItem, biome);
+				System.out.printf(RESET + "   %-3s  " + RESET, printItem + biome);
+				}
 			}
 			System.out.println();
 		}
