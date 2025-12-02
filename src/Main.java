@@ -89,8 +89,12 @@ public class Main {
                 }
             }
 
-            System.out.println("Enter target coordinates as 'x y' or 'r' to rest:");
+            System.out.println("Enter target coordinates as 'x y', or enter 'r' to rest, or enter 'q' to quit:");
             String line = userInput.nextLine().trim();
+            if (line.equalsIgnoreCase("q")) {
+                System.out.println("You quit the game.");
+                break;
+            }
             if (line.equalsIgnoreCase("r")) {
                 aPlayer.rest();
                 continue;
