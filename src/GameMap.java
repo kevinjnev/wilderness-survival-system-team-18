@@ -14,6 +14,7 @@ public class GameMap {
 	public float[][] moisture;
 
 	public Terrain[][] terrainGrid;
+	public String[][] itemGrid;
 	
 	// might not be necessary
 	public BufferedImage elevationImage;
@@ -48,6 +49,14 @@ public class GameMap {
 		//each cell will hold a terrain
 		terrainGrid = new Terrain[height][width];
 		generateTerrainGrid();
+
+		// init item grid to RESET
+		itemGrid = new String[height][width];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				itemGrid[y][x] = RESET;
+			}
+		}
 	}
 	
 	public static GameMap askForSize(Scanner userInput){
@@ -216,7 +225,7 @@ public class GameMap {
 
 	// Able to display key whenever
 	public void showKey(){
-		System.out.println("Key");
+		System.out.println("\nKey");
 		System.out.println("---------------");
 		System.out.println(RED + " = Food         P = Plains");
 		System.out.println(GREEN + " = Trader       M = Mountains");
@@ -270,13 +279,101 @@ public class GameMap {
 				biome = "M"; // mountain
 			}
 			String item = randomItem();
-			
-			if(item.equals("\u001B[0m")){
-				item = " ";
-			}
-			System.out.printf("%-2s %-3s", item, biome);
+			itemGrid[y][x] = item;
+			String printItem = item.equals(RESET) ? " " : item;
+			System.out.printf("%-2s %-3s", printItem, biome);
 		}
 		System.out.println();
+		}
+	}
+
+	// Populate itemGrid using the same pass as realTerrain, but do not print anything
+	public void seedItemsFromNoise() {
+		// default moisture for desert and plain requirements
+		float desertMoisture = 0.35f;
+		float plainsMoisture = 0.45f;
+
+		if (difficulty != null && difficulty.equalsIgnoreCase("Medium")) {
+			desertMoisture = desertMoisture + 0.05f;
+		} else if (difficulty != null && difficulty.equalsIgnoreCase("Hard")) {
+			desertMoisture = desertMoisture + 0.10f;
+			plainsMoisture = plainsMoisture - 0.05f;
+		}
+
+		int width = elevation[0].length;
+		int height = elevation.length;
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// assign item using same distribution
+				String item = randomItem();
+				itemGrid[y][x] = item;
+			}
+		}
+	}
+
+	// get item emoji at coordinates
+	public String getItemAt(int x, int y) {
+		if (x < 0 || x >= width || y < 0 || y >= height) return RESET;
+		return itemGrid[y][x];
+	}
+
+    // clear item at coordinates (set to RESET)
+	public void clearItemAt(int x, int y) {
+		if (x < 0 || x >= width || y < 0 || y >= height) return;
+		itemGrid[y][x] = RESET;
+	}
+
+	// print the playable map each turn, hiding tiles outside player's vision
+	public void printVisibleMap(Player player) {
+		int[] loc = player.getLocation();
+		int px = loc[0];
+		int py = loc[1];
+		int[][] offsets = player.getVision().getVisibleOffsets();
+
+		// build a visibility mask
+		boolean[][] visible = new boolean[height][width];
+		visible[py][px] = true; // always can see current tile
+		for (int[] off : offsets) {
+			int tx = px + off[0];
+			int ty = py + off[1];
+			if (tx >= 0 && tx < width && ty >= 0 && ty < height) {
+				visible[ty][tx] = true;
+			}
+		}
+
+		// Column indices header
+		System.out.print("    ");
+		for (int x = 0; x < width; x++) {
+			System.out.printf("%-6d", x);
+		}
+		System.out.println();
+
+		for (int y = 0; y < height; y++) {
+			// Row index
+			System.out.printf("%-3d ", y);
+			for (int x = 0; x < width; x++) {
+				boolean isPlayer = (x == px && y == py);
+				if (!visible[y][x]) {
+					System.out.printf("%-2s %-3s", " ", "?");
+					continue;
+				}
+
+				String biome;
+				Terrain t = terrainGrid[y][x];
+				if (t instanceof Desert) biome = "D";
+				else if (t instanceof Plains) biome = "P";
+				else if (t instanceof River) biome = "R";
+				else if (t instanceof Swamp) biome = "S";
+				else biome = "M";
+
+				String item = itemGrid[y][x];
+				String printItem = item.equals(RESET) ? " " : item;
+				if (isPlayer) printItem = "*";
+
+				System.out.printf("%-2s %-3s", printItem, biome);
+			}
+			System.out.println();
 		}
 	}
 
