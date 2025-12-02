@@ -138,6 +138,21 @@ public class GameMap {
 	//used logic from realTerrain but instead of printing terrain,
 	//I store it in terrainGrid
 	private void generateTerrainGrid() {
+
+		// default moisture for desert and plain requirements
+		float desertMoisture = 0.35f;
+		float plainsMoisture = 0.45f;
+
+		if (difficulty != null && difficulty.equalsIgnoreCase("Medium")) {
+			// Medium difficulty, slightly higher chance for desert terrain
+			desertMoisture = desertMoisture + 0.05f;
+		} else if (difficulty != null && difficulty.equalsIgnoreCase("Hard")) {
+			// Hard difficulty, bigger chance for desert terrain
+			// Slightly Lower chance for plain terrain
+			desertMoisture = desertMoisture + 0.10f;
+			plainsMoisture = plainsMoisture - 0.05f;
+		}
+
 		for (int y = 0; y < height; y++){
 			for (int x = 0; x < width; x++){
 				float e = elevation[y][x];
@@ -146,10 +161,10 @@ public class GameMap {
 				Terrain t;
 
 				if (e < 0.35f) {//f just converts 0.35 to float
-					if (m<0.35f) {
+					if (m < desertMoisture) {
 						terrainGrid[y][x] = new Desert();
 					}
-					else if (m < 0.45f) {
+					else if (m < plainsMoisture) {
 						terrainGrid[y][x] = new Plains();
 					}
 					else {
@@ -157,7 +172,7 @@ public class GameMap {
 					}
 				}
 				else if (e < 0.45f) {
-					if (m < 0.45f){
+					if (m < plainsMoisture){
 						terrainGrid[y][x] = new Plains();
 					}
 					else {
@@ -206,6 +221,20 @@ public class GameMap {
 	//Takes the elevation and moisture of each square and decides what terrain it is.
 	public void realTerrain(float[][] elevation, float[][] moisture) {
 
+		// default moisture for desert and plain requirements
+		float desertMoisture = 0.35f;
+		float plainsMoisture = 0.45f;
+
+		if (difficulty != null && difficulty.equalsIgnoreCase("Medium")) {
+			// Medium difficulty, slightly higher chance for desert terrain
+			desertMoisture = desertMoisture + 0.05f;
+		} else if (difficulty != null && difficulty.equalsIgnoreCase("Hard")) {
+			// Hard difficulty, bigger chance for desert terrain
+			// Slightly Lower chance for plain terrain
+			desertMoisture = desertMoisture + 0.10f;
+			plainsMoisture = plainsMoisture - 0.05f;
+		}
+
 		int width = elevation[0].length;
 		int height = elevation.length;
 		
@@ -216,16 +245,16 @@ public class GameMap {
 
 			String biome;
 
-			if(elevation[x][y] < 0.35){
-				if(moisture[x][y] < 0.35){
+			if(elevation[y][x] < 0.35){
+				if(moisture[y][x] < desertMoisture){
 					biome = "D"; // desert
-				} else if(moisture[x][y] < 0.45){
+				} else if(moisture[y][x] < plainsMoisture){
 					biome = "P"; // plains
 				} else {	// moisture <= 1
 					biome = "R"; // river
 				}
-			} else if(elevation[x][y] < 0.45){
-				if(moisture[x][y] < 0.45){
+			} else if(elevation[y][x] < 0.45){
+				if(moisture[y][x] < plainsMoisture){
 					biome = "P"; // plains
 				} else {	// moisture < 1
 					biome = "S"; // swamp
@@ -254,13 +283,13 @@ public class GameMap {
 		for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 
-			if (map[x][y] < 0.35) {
+			if (map[y][x] < 0.35) {
 			System.out.print("Low ");
 			}
-			else if (map[x][y] < 0.45) {
+			else if (map[y][x] < 0.45) {
 			System.out.print("Mid ");
 			}
-			else if (map[x][y] <= 1) {
+			else if (map[y][x] <= 1) {
 			System.out.print("High ");
 			}
 
@@ -278,13 +307,13 @@ public class GameMap {
 		for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 
-			if (map[x][y] < 0.30) {
+			if (map[y][x] < 0.30) {
 			System.out.print("Dry  ");
 			}
-			else if (map[x][y] < 0.45) {
+			else if (map[y][x] < 0.45) {
 			System.out.print("Mild ");
 			}
-			else if (map[x][y] <= 1) {
+			else if (map[y][x] <= 1) {
 			System.out.print("Wet  ");
 			}
 
