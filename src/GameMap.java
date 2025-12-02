@@ -28,20 +28,11 @@ public class GameMap {
 	// public static final String BLUE  = "\u001B[34m"; // water
 
 	// emojis to mark what items are where
-
-	/* 
 	public static final String RESET = "\u001B[0m"; // default
 	public static final String RED   = "🌮"; // food
 	public static final String GREEN = "👤"; // trader
 	public static final String YELLOW = "💰"; // gold
 	public static final String BLUE = "💧"; // water
-	*/
-
-	public static final String RESET = "N"; // default
-	public static final String RED   = "F"; // food
-	public static final String GREEN = "T"; // trader
-	public static final String YELLOW = "G"; // gold
-	public static final String BLUE = "W"; // water
 
 	public GameMap(int width, int height){
 		this.width = width;
