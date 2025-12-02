@@ -3,6 +3,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GameMap {
+	// static reference to the current map so other classes have access
+	public static GameMap current;
+
 	public String difficulty;
 	public int width;
 	public int height;
@@ -33,6 +36,8 @@ public class GameMap {
 	public GameMap(int width, int height){
 		this.width = width;
 		this.height = height;
+
+		GameMap.current = this;
 
 		elevation = createNoiseMap(width, height);
 		moisture = createNoiseMap(width, height);

@@ -190,6 +190,10 @@ public class Player {
         return brain;
     }
 
+    public boolean getStatus() {
+        return alive;
+    }
+
     /*
      * Unsure if we want to allow the player to set
      * Stamina, water, food, and gold. For now I have it set to no.
@@ -245,6 +249,22 @@ public class Player {
                 return;
             }
 
+            // update player's tracked location by finding the tile coordinates
+            GameMap map = GameMap.current;
+            if (map != null) {
+                boolean found = false;
+                for (int yy = 0; yy < map.height && !found; yy++) {
+                    for (int xx = 0; xx < map.width; xx++) {
+                        if (map.terrainGrid[yy][xx] == tile) {
+                            this.location = new int[] { xx, yy };
+                            this.currentTerrain = tile;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
             // If location is being tracked by player I need to know.
             // this.currentTerrain = tile;
 
@@ -259,6 +279,13 @@ public class Player {
         }
 
         System.out.println("Finished moving along the path. ");
+
+        // Check for victory (reached right edge)
+        GameMap map = GameMap.current;
+        if (map != null && this.location[0] >= map.width - 1) {
+            System.out.println("You have reached the edge of the map. You survived! Congratulations.");
+            this.alive = false; // end game loop
+        }
     }
 
     // helper method that handles game over messages.
