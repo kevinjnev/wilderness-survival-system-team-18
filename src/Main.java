@@ -55,10 +55,24 @@ public class Main {
         double food = aPlayer.getFood();
         int gold = aPlayer.getGold();
 
+        //TODO: MAP GENERATION
         
+        // Ask user for Map Size and Create Map
+        GameMap map = GameMap.askForSize(userInput);
+
+        // Difficulty Selection
+        map.askForDifficulty(userInput);
+
+        // Generate Terrain Map after Difficulty
+        map.realTerrain(map.elevation, map.moisture);
+
+        // Show the Key
+        map.showKey();
+
         //close Scanner.
         userInput.close();
+        
 
-        //TODO: MAP GENERATION
+
     }
 }

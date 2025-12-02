@@ -97,6 +97,8 @@ public class GameMap {
 				input.equalsIgnoreCase("Hard")) {
 					valid = true;
 					this.difficulty = input;
+					// Generate Terrain Grid after
+					generateTerrainGrid();
 				} else {
 					System.out.println("Invalid input, try again.");
 				}
