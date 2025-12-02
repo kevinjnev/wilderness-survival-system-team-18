@@ -92,7 +92,7 @@ public class TradingMethods {
                     case REJECT:
                         System.out.println("Trader rejects: " + traderResponse.message);
                         if (!trader.supplyStatus()) {
-                            System.out.println("The trader leaves!");
+                            System.out.println("The trader left out of anger.");
                             trading = false;
                         }
                         break;
@@ -123,21 +123,21 @@ public class TradingMethods {
             
             if (response.action == Trader.TradeResponse.Action.ACCEPT) {
                 if (trader.executeTrade(player, offer)) {
-                    System.out.println("AI traded 3 gold for +" + waterWanted + " water, +" + foodWanted + " food");
+                    System.out.println("Brain traded 3 gold for +" + waterWanted + " water, +" + foodWanted + " food");
                 }
             } else if (response.action == Trader.TradeResponse.Action.COUNTER) {
                 if (response.counterOffer.goldOffered <= player.getGold()) {
                     if (trader.executeTrade(player, response.counterOffer)) {
-                        System.out.println("AI accepted counter offer: " + response.counterOffer.goldOffered + " gold");
+                        System.out.println("Brain accepted counter offer: " + response.counterOffer.goldOffered + " gold");
                     }
                 } else {
-                    System.out.println("AI declined - not enough gold for counter offer.");
+                    System.out.println("Brain declined - not enough gold for counter offer.");
                 }
             } else {
                 System.out.println("Trader rejected the offer.");
             }
         } else {
-            System.out.println("AI has no gold to trade.");
+            System.out.println("Brain has no gold to trade.");
         }
     }
     
