@@ -199,9 +199,9 @@ public class GameMap {
 	public void printMap(float[][] map) {
 		System.out.println();
 		System.out.println("Start:");
-		for (int x = 0; x < map.length; x++) {
-		for(int y = 0; y < map[x].length; y++) {
-			System.out.print(map[x][y] + " ");
+		for (int y = 0; y < map.length; y++) {
+		for(int x = 0; x < map[y].length; x++) {
+			System.out.print(map[y][x] + " ");
 		}
 		System.out.println();
 		}
