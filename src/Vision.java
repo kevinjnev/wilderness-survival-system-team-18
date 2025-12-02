@@ -167,9 +167,9 @@ public class Vision {
         return best;
     }
 
-    // helper: find up to two nearest tiles that match the predicate and return their paths
+    // Helper to find paths to tiles with a specific item type
     @SuppressWarnings("unchecked")
-    private ArrayList<Terrain>[] findPathsForPredicate(Player player, java.util.function.Predicate<Terrain> matcher) {
+    private ArrayList<Terrain>[] findPathsForItem(Player player, String itemType) {
         GameMap map = GameMap.current;
         ArrayList<Terrain>[] result = new ArrayList[2];
         result[0] = new ArrayList<>();
@@ -186,8 +186,10 @@ public class Vision {
             int tx = sx + off[0];
             int ty = sy + off[1];
             if (tx < 0 || tx >= map.width || ty < 0 || ty >= map.height) continue;
-            Terrain t = map.terrainGrid[ty][tx];
-            if (t != null && matcher.test(t)) {
+            
+            // Check the itemGrid for this item type
+            String item = map.getItemAt(tx, ty);
+            if (item.equals(itemType)) {
                 candidates.add(new int[] { tx, ty, Math.abs(tx - sx) + Math.abs(ty - sy) });
             }
         }
@@ -207,36 +209,28 @@ public class Vision {
     }
 
     public ArrayList<Terrain>[] findTraderPaths(Player player) {
-        // no trader placement in map yet; return empty paths
-        @SuppressWarnings("unchecked")
-        ArrayList<Terrain>[] r = new ArrayList[2];
-        r[0] = new ArrayList<>(); r[1] = new ArrayList<>();
-        return r;
+        return findPathsForItem(player, GameMap.GREEN);
     }
 
     public ArrayList<Terrain>[] findGoldPaths(Player player) {
-        // gold placement not represented by terrain; return empty for now
-        @SuppressWarnings("unchecked")
-        ArrayList<Terrain>[] r = new ArrayList[2];
-        r[0] = new ArrayList<>(); r[1] = new ArrayList<>();
-        return r;
+        return findPathsForItem(player, GameMap.YELLOW);
     }
 
     public ArrayList<Terrain>[] findWaterPaths(Player player) {
-        // water = River terrain
-        return findPathsForPredicate(player, t -> t.getName().equalsIgnoreCase("River"));
+        return findPathsForItem(player, GameMap.BLUE);
     }
 
     public ArrayList<Terrain>[] findFoodPaths(Player player) {
-        // food = Forest terrain
-        return findPathsForPredicate(player, t -> t.getName().equalsIgnoreCase("Forest"));
+        return findPathsForItem(player, GameMap.RED);
     }
 
     public boolean isTraderVisible(Player player) {
-        return false; // no traders placed on map currently
+        ArrayList<Terrain>[] p = findTraderPaths(player);
+        return (p[0].size() > 0 || p[1].size() > 0);
     }
     public boolean isGoldVisible(Player player) {
-        return false; // no gold placement logic currently
+        ArrayList<Terrain>[] p = findGoldPaths(player);
+        return (p[0].size() > 0 || p[1].size() > 0);
     }
     public boolean isWaterVisible(Player player) {
         ArrayList<Terrain>[] p = findWaterPaths(player);

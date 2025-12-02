@@ -213,7 +213,6 @@ public class Player {
 
     }
 
-    // TODO: Make the movement and rest methods.
 
     // moveAlongPath takes in an arraylist of the terrain tiles that are traversed.
     // For each of the tiles we need to get the costs from the terrain and change
@@ -279,6 +278,8 @@ public class Player {
         }
 
         System.out.println("Finished moving along the path. ");
+
+//I commented this out because the main loop already does this and it was printing twice.
 /*
         // Check for victory (reached right edge)
         GameMap map = GameMap.current;

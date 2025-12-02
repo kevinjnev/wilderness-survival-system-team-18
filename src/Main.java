@@ -89,30 +89,26 @@ public class Main {
                 // Really similar to manual mode just brain makes the move instead.
                 System.out.println("Brain is making a move...");
                 
-                // Store position before move for item collection
-                //int px = aPlayer.getLocation()[0];
-                //int py = aPlayer.getLocation()[1];
-                
-                // Let the brain decide and execute the move
                 aPlayer.getBrain().makeMove(aPlayer);
                 
-                // After movement, collect items at the new location
                 int fx = aPlayer.getLocation()[0];
                 int fy = aPlayer.getLocation()[1];
                 
-                // collect item if present at final tile and print earnings
                 String item = map.getItemAt(fx, fy);
-                if (item.equals(GameMap.RED)) {
+                if (item.equals(GameMap.RED)) { // red is food
                     aPlayer.addResources(0, 0, 10);
                     System.out.println("You found food: +10 food.");
                     map.clearItemAt(fx, fy);
-                } else if (item.equals(GameMap.BLUE)) {
+                } else if (item.equals(GameMap.BLUE)) { // blue is water
                     aPlayer.addResources(0, 10, 0);
                     System.out.println("You found water: +10 water.");
                     map.clearItemAt(fx, fy);
-                } else if (item.equals(GameMap.YELLOW)) {
+                } else if (item.equals(GameMap.YELLOW)) { // yellow is gold
                     aPlayer.addGold(5);
                     System.out.println("You found gold: +5 gold.");
+                    map.clearItemAt(fx, fy);
+                } else if (item.equals(GameMap.GREEN)) { // green is trader
+                    TradingMethods.autoTrade(aPlayer);
                     map.clearItemAt(fx, fy);
                 }
                 
@@ -143,6 +139,7 @@ public class Main {
                         if (item.equals(GameMap.RED)) desc = "+Food";
                         else if (item.equals(GameMap.BLUE)) desc = "+Water";
                         else if (item.equals(GameMap.YELLOW)) desc = "+Gold";
+                        else if (item.equals(GameMap.GREEN)) desc = "Trader";
                         System.out.printf("(%d,%d) %s\n", tx, ty, desc);
                     }
                 }
@@ -209,6 +206,9 @@ public class Main {
                 } else if (item.equals(GameMap.YELLOW)) {
                     aPlayer.addGold(5);
                     System.out.println("You found gold: +5 gold.");
+                    map.clearItemAt(fx, fy);
+                } else if (item.equals(GameMap.GREEN)) { // green is trader
+                    TradingMethods.manualTrade(aPlayer, userInput);
                     map.clearItemAt(fx, fy);
                 }
 
