@@ -279,13 +279,14 @@ public class Player {
         }
 
         System.out.println("Finished moving along the path. ");
-
+/*
         // Check for victory (reached right edge)
         GameMap map = GameMap.current;
         if (map != null && this.location[0] >= map.width - 1) {
             System.out.println("You have reached the edge of the map. You survived! Congratulations.");
             this.alive = false; // end game loop
         }
+*/
     }
 
     // helper method that handles game over messages.

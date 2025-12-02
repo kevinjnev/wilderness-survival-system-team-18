@@ -131,6 +131,9 @@ public class Vision {
         return searchPath(player, targetX, targetY);
     }
 
+    // This finds the farthest path toward the end that is visible to the player.
+    // It used to search the whole map but that would mean the player would move
+    // using the whole map for vision instead of just what they see, so I changed it.
     public ArrayList<Terrain> farthestPathToEnd(Player player) {
         GameMap map = GameMap.current;
         ArrayList<Terrain> empty = new ArrayList<Terrain>();
@@ -139,15 +142,25 @@ public class Vision {
         ArrayList<Terrain> best = empty;
         int bestDist = Integer.MAX_VALUE;
 
-        for (int y = 0; y < map.height; y++) {
-            for (int x = 0; x < map.width; x++) {
-                ArrayList<Terrain> path = searchPath(player, x, y);
-                if (path.size() == 0) continue;
-                Terrain last = path.get(path.size()-1);
-                int dist = getDistToEnd(last);
+        int[] loc = player.getLocation();
+        int px = loc[0], py = loc[1];
+        int[][] offsets = visibleOffsets();
+
+        for (int i = 0; i < offsets.length; i++) {
+            int x = px + offsets[i][0];
+            int y = py + offsets[i][1];
+            
+            if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
+                
+                int dist = map.width - 1 - x;
+                
                 if (dist < bestDist) {
-                    bestDist = dist;
-                    best = path;
+                    ArrayList<Terrain> path = searchPath(player, x, y);
+                    
+                    if (path.size() > 0) {
+                        bestDist = dist;
+                        best = path;
+                    }
                 }
             }
         }
